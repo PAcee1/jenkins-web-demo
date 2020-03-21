@@ -8,6 +8,19 @@ pipeline {
             checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'b54233ca-0569-427c-b82a-aad8dcbd0714', url: 'git@github.com:PAcee1/jenkins-web-demo.git']]])
          }
       }
+      stage('check code') {
+           steps {
+              echo 'check code'
+              script {
+                    // 引入SonarQube Scanner工具，这里是我们在Jenkins全局工具中配置的名称
+                    scannerHome = tool 'sonar-scanner'
+              }
+              // 引入Sonar服务器环境，这里是我们Jenkins系统配置中Sonar的名称
+              withSonarQubeEnv('sonar'){
+                    sh "${scannerHome}/bin/sonar-scanner"
+              }
+           }
+        }
       stage('build code') {
          steps {
             echo 'build code'
